@@ -15,7 +15,7 @@ export default {
 	}
 
     return new Response(
-      "Hello World",
+      "See https://github.com/escrimeuse/quebec-health-database",
     );
   },
 };
