@@ -1,0 +1,24 @@
+{
+	"name": "quebec-health-data",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"cf-typegen": "wrangler types",
+		"create-db:local": "wrangler d1 execute health-db --local --file=./autogenSchema.sql",
+		"create-db:remote": "wrangler d1 execute health-db --remote --file=./autogenSchema.sql",
+		"fetch-data": "node src/fetchWaitlistData.mts",
+		"autogen-schema": "node src/autogenSchema.mts"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.8.19",
+		"@types/node": "^25.0.3",
+		"typescript": "^5.5.2",
+		"vitest": "~3.2.0",
+		"wrangler": "^4.54.0"
+	},
+	"type": "module"
+}
