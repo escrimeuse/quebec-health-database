@@ -4,13 +4,13 @@ export default {
 
     if (pathname === "/api/regions") {
       const { results } = await env.health_db
-        .prepare("SELECT * FROM Regions")
+        .prepare("SELECT * FROM regions")
         .run();
       return Response.json(results);
     }
 
 	if (pathname === '/api/surgical_specialties') {
-		const {results} = await env.health_db.prepare("SELECT * FROM SurgicalSpecialties").run();
+		const {results} = await env.health_db.prepare("SELECT * FROM specialties").run();
 		return Response.json(results);
 	}
 
