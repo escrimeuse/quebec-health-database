@@ -8,8 +8,7 @@ const HEADERS = {
 
 export default {
   async fetch(request, env) {
-    const { pathname } = new URL(request.url);
-
+    console.log("request", request)
     if (!env.IS_LOCAL && !ALLOWED_ORIGINS.includes(request.headers.origin)) {
       return new Response(undefined, {status: 403})
     }
@@ -18,18 +17,29 @@ export default {
       return new Response(undefined, {status: 405})
     }
 
+    const url = new URL(request.url);
+    const {pathname, searchParams} = url;
+    console.log("searchParams", searchParams.get('region'))
+    /** Returns the region information (id and name) */
     if (pathname === "/api/regions") {
       const { results } = await env.health_db
         .prepare("SELECT * FROM regions")
         .run();
 
-      return new Response(results, {headers: HEADERS});
+      return Response.json(results, {headers: HEADERS})
     }
 
-	if (pathname === '/api/surgical_specialties') {
-		const {results} = await env.health_db.prepare("SELECT * FROM specialties").run();
-		return new Response(results, {headers: HEADERS});
-	}
+    /** Returns the surgical specialty information (id and name) */
+    if (pathname === '/api/specialties') {
+      const {results} = await env.health_db.prepare("SELECT * FROM specialties").run();
+      return Response.json(results, {headers: HEADERS});
+    }
+
+    /** Returns waitlist information */
+    if (pathname === '/api/waitlist') {
+      const {results} = await env.health_db.prepare("SELECT * FROM waitlist WHERE region = ? LIMIT 10").bind(searchParams.get('region') ?? '*').run();
+      return Response.json(results, {headers: HEADERS});
+    }
 
     return new Response(
       "See https://github.com/escrimeuse/quebec-health-database",
