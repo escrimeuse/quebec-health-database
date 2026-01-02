@@ -14,7 +14,7 @@ First you'll want to grab the data from DonneesQuebec:
 npm run fetch-data
 ```
 
-This command will grab the data and write it to a local file `healthData.json`.
+This command will grab the data and write it to a local file `src/data/autogen/waitlist.json`.
 
 Next, you'll need to general the DB schema file:
 
@@ -38,7 +38,7 @@ ex: `npx wrangler d1 execute health-db --local --command="SELECT * FROM Waitlist
 
 ## Deployment
 
-To populate the remote DB:
+To populate the remote DB (make sure you've fetched the DonneesQuebec data first and have generated the schema file):
 
 ```shell
 npm run create-db:remote
