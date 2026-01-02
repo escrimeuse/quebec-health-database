@@ -19,7 +19,7 @@ function transformData(data: any) {
         const [years, period] = d.PeriodeAttente.split('-')
         
         return {
-            region: Number(d.Region.substring(3)),
+            region: d.Region,
             year: `20${years.substr(0, 2)}`,
             delay: DELAY_MAP[d['Delais_d\'attente']],
             period,
@@ -48,7 +48,8 @@ async function fetchData() {
 
     try {
         console.log("Writing to file healthData.json ...")
-        fs.writeFileSync('healthData.json', JSON.stringify(transformedData))
+        fs.mkdirSync('src/data/autogen', {recursive: true});
+        fs.writeFileSync('src/data/autogen/waitlist.json', JSON.stringify(transformedData))
         console.log("Success!")
     } catch (error) {
         console.log("Error: ", error)

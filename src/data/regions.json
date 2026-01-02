@@ -1,0 +1,66 @@
+[
+    {
+        "id": "RSS01",
+        "name": "Bas-Saint-Laurent"
+    }, 
+    {
+        "id": "RSS02",
+        "name": "Saguenay - Lac-Saint-Jean"
+    },
+    {
+        "id": "RSS03",
+        "name": "Capitale-Nationale"
+    },
+    {
+        "id": "RSS04",
+        "name": "Capitale-Nationale"
+    },
+    {
+        "id": "RSS05",
+        "name": "Estrie"
+    },
+    {
+        "id": "RSS06",
+        "name": "Montréal"
+    }, 
+    {
+        "id": "RSS07",
+        "name": "Outaouais"
+    },
+    {
+        "id": "RSS08",
+        "name": "Abitibi-Témiscamingue"
+    }, 
+    {
+        "id": "RSS09",
+        "name": "Côte-Nord"
+    },
+    {
+        "id": "RSS10",
+        "name": "Nord-du-Québec"
+    }, 
+    {
+        "id": "RSS11",
+        "name": "Gaspésie - Îles-de-la-Madeleine"
+    },
+    {
+        "id": "RSS12",
+        "name": "Chaudière-Appalaches"
+    },
+    {
+        "id": "RSS13",
+        "name": "Laval"
+    },
+    {
+        "id": "RSS14",
+        "name": "Lanaudière"
+    },
+    {
+        "id": "RSS15",
+        "name": "Laurentides"
+    },
+    {
+        "id": "RSS16",
+        "name": "Montérégie"
+    }
+]

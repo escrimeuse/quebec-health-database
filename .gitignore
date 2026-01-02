@@ -168,5 +168,5 @@ dist
 
 .editorconfig
 .vscode/
-autogenSchema.sql
-healthData.json
+schema.sql
+src/data/autogen/

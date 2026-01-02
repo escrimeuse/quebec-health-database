@@ -1,0 +1,38 @@
+[
+    {
+        "id": "general",
+        "name": "General Surgery"
+    },
+    {
+        "id": "orthopedic",
+        "name": "Orthopedic Surgery"
+    },
+    {
+        "id": "plastic",
+        "name": "Plastic Surgery"
+    },
+    {
+        "id": "vascular",
+        "name": "Vascular Surgery"
+    },
+    {
+        "id": "neuro",
+        "name": "Neurosurgery"
+    },
+    {
+        "id": "obgyn",
+        "name": "Obstetrics/Gynecology Surgery"
+    },
+    {
+        "id": "entf",
+        "name": "ENT/Cervico-Facial Surgery"
+    },
+    {
+        "id": "urology",
+        "name": "Urology Surgery"
+    },
+    {
+        "id": "other",
+        "name": "Other Surgery"
+    }
+]

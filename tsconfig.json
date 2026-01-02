@@ -41,5 +41,5 @@
 		]
 	},
 	"exclude": ["test"],
-	"include": ["worker-configuration.d.ts", "src/**/*.ts", "src/fetchWaitlistData.mts"]
+	"include": ["worker-configuration.d.ts", "src/**/*.ts", "src/scripts/fetchWaitlistData.mts"]
 }

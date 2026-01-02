@@ -8,10 +8,10 @@
 		"start": "wrangler dev",
 		"test": "vitest",
 		"cf-typegen": "wrangler types",
-		"create-db:local": "wrangler d1 execute health-db --local --file=./autogenSchema.sql",
-		"create-db:remote": "wrangler d1 execute health-db --remote --file=./autogenSchema.sql",
-		"fetch-data": "node src/fetchWaitlistData.mts",
-		"autogen-schema": "node src/autogenSchema.mts"
+		"create-db:local": "wrangler d1 execute health-db --local --file=./schema.sql",
+		"create-db:remote": "wrangler d1 execute health-db --remote --file=./schema.sql",
+		"fetch-data": "node src/scripts/fetchWaitlistData.mts",
+		"autogen-schema": "node src/scripts/autogenSchema.mts"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
