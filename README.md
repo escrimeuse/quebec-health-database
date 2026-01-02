@@ -18,7 +18,7 @@ npm run fetch-data
 
 This command will grab the data and write it to a local file `src/data/autogen/waitlist.json`.
 
-Next, you'll need to general the DB schema file:
+Next, you'll need to generate the DB schema file:
 
 ```shell
 npm run autogen-schema
