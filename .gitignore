@@ -170,3 +170,4 @@ dist
 .vscode/
 schema.sql
 src/data/autogen/
+shapeFile.zip

@@ -11,7 +11,8 @@
 		"create-db:local": "wrangler d1 execute health-db --local --file=./schema.sql",
 		"create-db:remote": "wrangler d1 execute health-db --remote --file=./schema.sql",
 		"fetch-data": "node src/scripts/fetchWaitlistData.mts",
-		"autogen-schema": "node src/scripts/autogenSchema.mts"
+		"autogen-schema": "node src/scripts/autogenSchema.mts",
+		"fetch-regions": "node src/scripts/fetchRegions.mts"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
@@ -20,5 +21,8 @@
 		"vitest": "~3.2.0",
 		"wrangler": "^4.54.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"shpjs": "^6.2.0"
+	}
 }

@@ -25,16 +25,16 @@ function autogenRegionSQL() {
 
     console.log("Reading region data from file data/regions.json");
     try {
-        const regions = fs.readFileSync('./src/data/regions.json', 'utf-8');
+        const regions = fs.readFileSync('./src/data/autogen/regions.json', 'utf-8');
         regionData = JSON.parse(regions);
     } catch (error) {
         console.error("Error reading src/regions.json: ", error)
     }
 
     return `
-CREATE TABLE IF NOT EXISTS regions (id TEXT PRIMARY KEY, name TEXT);
+CREATE TABLE IF NOT EXISTS regions (code TEXT PRIMARY KEY, name TEXT);
 ${regionData.map((data) => {
-    return `INSERT INTO regions (id, name) VALUES ("${data.id}", "${data.name}");`
+    return `INSERT INTO regions (code, name) VALUES ("${data.code}", "${data.name}");`
 }).join("\n")}
     `
 }
@@ -70,7 +70,7 @@ function autogenWaitlistSQL() {
     }
 
     return `
-CREATE TABLE IF NOT EXISTS waitlist (id INTEGER PRIMARY KEY, region TEXT, year TEXT, period TEXT, delay TEXT, total INTEGER, other INTEGER, general INTEGER, orthopedic INTEGER, plastic INTEGER, vascular INTEGER, neuro INTEGER, entf INTEGER, obgyn INTEGER, opthamology INTEGER, urology INTEGER, FOREIGN KEY (region) REFERENCES regions(id));
+CREATE TABLE IF NOT EXISTS waitlist (id INTEGER PRIMARY KEY, region TEXT, year TEXT, period TEXT, delay TEXT, total INTEGER, other INTEGER, general INTEGER, orthopedic INTEGER, plastic INTEGER, vascular INTEGER, neuro INTEGER, entf INTEGER, obgyn INTEGER, opthamology INTEGER, urology INTEGER, FOREIGN KEY (region) REFERENCES regions(code));
 ${waitlistData.map((data, index) => {
     return `INSERT INTO waitlist (id, region, year, period, delay, total, other, general, orthopedic, plastic, vascular, neuro, entf, obgyn, opthamology, urology) VALUES (${index}, "${data.region}", "${data.year}", "${data.period}", "${data.delay}", ${data.total}, ${data.other}, ${data.general}, ${data.orthopedic}, ${data.plastic}, ${data.vascular}, ${data.neuro}, ${data.entf}, ${data.obgyn}, ${data.opthamology}, ${data.urology});`;
 }).join("\n")}
