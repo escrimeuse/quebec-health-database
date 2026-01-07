@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
-		"dev": "wrangler dev --env local",
+		"dev": "wrangler dev",
 		"start": "wrangler dev --env local",
 		"test": "vitest",
 		"cf-typegen": "wrangler types",
@@ -23,6 +23,9 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"shpjs": "^6.2.0"
+		"chanfana": "^3.0.0",
+		"itty-router": "^5.0.22",
+		"shpjs": "^6.2.0",
+		"zod": "^4.3.5"
 	}
 }
