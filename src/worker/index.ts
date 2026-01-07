@@ -1,5 +1,5 @@
 import { fromIttyRouter } from 'chanfana';
-import { Router } from 'itty-router';
+import { cors, Router, json } from 'itty-router';
 import { RegionsEndpoint } from '../api/regions';
 import { WaitlistEndpoint } from '../api/waitlist';
 import { SpecialtiesEndpoint } from '../api/specialties';
@@ -8,7 +8,19 @@ const ALLOWED_ORIGINS = ['https://*.cathryn-griffiths.workers.dev/'];
 const ALLOWED_METHODS = ['GET', 'OPTIONS'];
 
 const router = Router({
+	before: [
+		(request, env) => {
+			if (!env.IS_LOCAL && !ALLOWED_ORIGINS.includes(request.headers.origin)) {
+				return new Response(undefined, { status: 403 });
+			}
+
+			if (!ALLOWED_METHODS.includes(request.method)) {
+				return new Response(undefined, { status: 405 });
+			}
+		},
+	],
 	base: '/api',
+	finally: [json],
 });
 
 const openapi = fromIttyRouter(router);
