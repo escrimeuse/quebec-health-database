@@ -7,8 +7,14 @@ import { SpecialtiesEndpoint } from '../api/specialties';
 const ALLOWED_ORIGINS = ['https://*.cathryn-griffiths.workers.dev/'];
 const ALLOWED_METHODS = ['GET', 'OPTIONS'];
 
+const { preflight, corsify } = cors({
+	origin: ALLOWED_ORIGINS.join(','),
+	allowMethods: ALLOWED_METHODS.join(','),
+});
+
 const router = Router({
 	before: [
+		preflight,
 		(request, env) => {
 			if (!env.IS_LOCAL && !ALLOWED_ORIGINS.includes(request.headers.origin)) {
 				return new Response(undefined, { status: 403 });
@@ -20,7 +26,7 @@ const router = Router({
 		},
 	],
 	base: '/api',
-	finally: [json],
+	finally: [json, corsify],
 });
 
 const openapi = fromIttyRouter(router);
