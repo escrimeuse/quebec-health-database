@@ -25,15 +25,14 @@ const router = Router({
 			}
 		},
 	],
-	base: '/api',
 	finally: [json, corsify],
 });
 
 const openapi = fromIttyRouter(router);
 
-openapi.get('/regions', RegionsEndpoint);
-openapi.get('/waitlist', WaitlistEndpoint);
-openapi.get('/specialties', SpecialtiesEndpoint);
+openapi.get('/api/regions', RegionsEndpoint);
+openapi.get('/api/waitlist', WaitlistEndpoint);
+openapi.get('/api/specialties', SpecialtiesEndpoint);
 
 router.all('*', () => new Response('Not Found.', { status: 404 }));
 
