@@ -21,7 +21,7 @@ This command will grab the data and write it to a local file `src/data/autogen/w
 Next, you'll need to generate the DB schema file:
 
 ```shell
-npm run autogen-schema
+npm run autogen-sql-schema
 ```
 
 Next, you'll want to populate your local DB:
