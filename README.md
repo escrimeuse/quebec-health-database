@@ -9,6 +9,12 @@ Data is pulled from the DonneesQuebec API:
 - Surgical Waitlist (https://www.donneesquebec.ca/recherche/dataset/chirurgies-portrait-de-la-liste-d-attente)
 - Territorial Limits for the regions sociosanitaire (RSS) (https://www.donneesquebec.ca/recherche/dataset/limites-territoriales/resource/9b27d4d3-0a10-491e-ad19-bfcf27179be3)
 
+Future data will include:
+
+- Births (https://www.donneesquebec.ca/recherche/dataset/med-echo-rapport-s15-distribution-accouch-cesar-naiss-vivantes-mortinaiss-par-region-traitement)
+- Spending (https://www.donneesquebec.ca/recherche/dataset/contour-financier-depenses-par-programme-et-par-region)
+- ... and probably pretty much anything else from https://www.donneesquebec.ca/recherche/organization/msss
+
 Currently, when deployed the only accepted origin is my personal CF worker domain. If you pull this locally, you can make local requests to the local DB. If you want to deploy it to your own CF account, be sure to update the allowed origins in the worker file.
 
 ## Local Dev
