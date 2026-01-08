@@ -1,8 +1,8 @@
 import { fromIttyRouter } from 'chanfana';
 import { cors, Router, json } from 'itty-router';
-import { RegionsEndpoint } from '../api/regions';
-import { WaitlistEndpoint } from '../api/waitlist';
-import { SpecialtiesEndpoint } from '../api/specialties';
+import { RegionsEndpoint } from '../endpoints/regions';
+import { WaitlistEndpoint } from '../endpoints/waitlist';
+import { SpecialtiesEndpoint } from '../endpoints/specialties';
 
 const ALLOWED_ORIGINS = ['https://*.cathryn-griffiths.workers.dev/'];
 const ALLOWED_METHODS = ['GET', 'OPTIONS'];
