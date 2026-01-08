@@ -2,7 +2,7 @@
 
 ## Description
 
-This database uses Cloudflare D1 for storage and a Cloudflare worker for the API. 
+This database uses Cloudflare D1 for storage and a Cloudflare worker for the API.
 
 Data is pulled from the DonneesQuebec API for the Surgical Waitlist (https://www.donneesquebec.ca/recherche/dataset/chirurgies-portrait-de-la-liste-d-attente). In the future, this DB will also include other health data.
 
@@ -10,7 +10,7 @@ Currently, when deployed the only accepted origin is my personal CF worker domai
 
 ## Local Dev
 
-First you'll want to grab the data from DonneesQuebec: 
+First you'll want to grab the data from DonneesQuebec:
 
 ```shell
 npm run fetch-data
@@ -27,7 +27,7 @@ npm run autogen-schema
 Next, you'll want to populate your local DB:
 
 ```shell
-npm run create-db:local
+npm run create-local-db
 ```
 
 To query the local DB, you can do:
@@ -43,7 +43,7 @@ ex: `npx wrangler d1 execute health-db --local --command="SELECT * FROM Waitlist
 To populate the remote DB (make sure you've fetched the DonneesQuebec data first and have generated the schema file):
 
 ```shell
-npm run create-db:remote
+npm run create-remote-db
 ```
 
 To deploy the Worker:

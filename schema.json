@@ -1,0 +1,173 @@
+{
+	"openapi": "3.1.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "OpenAPI"
+	},
+	"components": {
+		"schemas": {},
+		"parameters": {}
+	},
+	"paths": {
+		"/api/regions": {
+			"get": {
+				"operationId": "get_RegionsEndpoint",
+				"responses": {
+					"200": {
+						"description": "A list of the region sociosanitaire in Quebec",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"code": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										},
+										"required": ["code", "name"]
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/waitlist": {
+			"get": {
+				"operationId": "get_WaitlistEndpoint",
+				"parameters": [
+					{
+						"schema": {
+							"type": "string",
+							"enum": ["0_6", "6_12", "12_plus"],
+							"default": "0_6"
+						},
+						"required": false,
+						"name": "delay",
+						"in": "query"
+					},
+					{
+						"schema": {
+							"type": "string",
+							"default": "RSS06"
+						},
+						"required": false,
+						"name": "region",
+						"in": "query"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Waitlist data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"region": {
+											"type": "string"
+										},
+										"year": {
+											"type": "string"
+										},
+										"delay": {
+											"type": "string",
+											"enum": ["0_6", "6_12", "12_plus"]
+										},
+										"period": {
+											"type": ["string", "null"]
+										},
+										"total": {
+											"type": ["number", "null"]
+										},
+										"other": {
+											"type": ["number", "null"]
+										},
+										"general": {
+											"type": ["number", "null"]
+										},
+										"orthopedic": {
+											"type": ["number", "null"]
+										},
+										"plastic": {
+											"type": ["number", "null"]
+										},
+										"vascular": {
+											"type": ["number", "null"]
+										},
+										"neuro": {
+											"type": ["number", "null"]
+										},
+										"entf": {
+											"type": ["number", "null"]
+										},
+										"obgyn": {
+											"type": ["number", "null"]
+										},
+										"opthamology": {
+											"type": ["number", "null"]
+										},
+										"urology": {
+											"type": ["number", "null"]
+										}
+									},
+									"required": [
+										"region",
+										"year",
+										"delay",
+										"period",
+										"total",
+										"other",
+										"general",
+										"orthopedic",
+										"plastic",
+										"vascular",
+										"neuro",
+										"entf",
+										"obgyn",
+										"opthamology",
+										"urology"
+									]
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/specialties": {
+			"get": {
+				"operationId": "get_SpecialtiesEndpoint",
+				"responses": {
+					"200": {
+						"description": "Specialties data",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"enum": ["general", "orthopedic", "plastic", "vascular", "neuro", "obgyn", "entf", "urology", "other"]
+										},
+										"name": {
+											"type": "string"
+										}
+									},
+									"required": ["id", "name"]
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"webhooks": {}
+}
