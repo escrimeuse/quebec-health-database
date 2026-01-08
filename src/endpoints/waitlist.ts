@@ -6,7 +6,28 @@ export class WaitlistEndpoint extends OpenAPIRoute {
 		request: {
 			query: z.object({
 				delay: z.enum(['0_6', '6_12', '12_plus']).default('0_6'),
-				region: z.string().default('RSS06'),
+				region: z
+					.enum([
+						'RSS01',
+						'RSS02',
+						'RSS03',
+						'RSS04',
+						'RSS05',
+						'RSS06',
+						'RSS07',
+						'RSS08',
+						'RSS09',
+						'RSS10',
+						'RSS11',
+						'RSS12',
+						'RSS13',
+						'RSS14',
+						'RSS15',
+						'RSS16',
+						'RSS17',
+						'RSS18',
+					])
+					.default('RSS06'),
 			}),
 		},
 		responses: {
