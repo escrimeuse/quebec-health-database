@@ -1,3 +1,7 @@
+import { DonneesQuebec } from './DonneesQuebec.mts';
+import type { DonneesQuebecResponse } from './types';
+import axios from 'axios';
+
 const RESOURCE_IDS = [
 	'2971bc36-3b1e-4323-909e-c66c96bc9946', // 2024 to 2025
 	'df36cf4a-d089-4bda-8275-34e729c8be67', // 2023 to 2024
@@ -15,64 +19,65 @@ const RESOURCE_IDS = [
 	'f95d165b-6cfa-473e-9465-711c59ee76be', // 2011 to 2012
 ];
 
-const ENDPOINT = 'https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql';
+type BirthRecordData = {
+	TYPE_SOINS: string;
+	REGION: string;
+	NBR_ACCOUCH_ET_CESARIEN: string | null;
+	NBR_CESARIENNES: string | null;
+	NBR_NAISS_VIVANT: string | null;
+	NBR_MORTINAISSANC: string | null;
+	PERIODE: string | null;
+};
 
-async function getData() {
-	let data;
-	try {
-		const responses = await Promise.all(
-			RESOURCE_IDS.map(async (id) => {
-				return await fetch(`${ENDPOINT}?sql=SELECT * from "${id}"`);
-			})
-		);
+type TransformedBirthData = {
+	care_type: string;
+	region_code: string;
+	deliveries_and_csections: number | null;
+	csections: number | null;
+	live_births: number | null;
+	stillbirths: number | null;
+	startDate: Date;
+	endDate: Date;
+};
 
-		const responseJson = await Promise.all(responses.map(async (r) => await r.json()));
-
-		data = responseJson.map((r) => {
-			return r.result.records;
-		});
-	} catch (error) {
-		console.error('There was an error getting the birth data: ', error);
-	}
-	return data;
-}
-
-async function fetchBirths() {
-	const birthData = await getData();
-
-	if (!birthData) {
-		console.error('No birth data found');
-		return;
+class Births extends DonneesQuebec<BirthRecordData, Array<TransformedBirthData>> {
+	async getDataFromApi() {
+		const { data } = await axios.get<DonneesQuebecResponse<BirthRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
+		return data;
 	}
 
-	const formattedData = birthData.reduce((acc, data) => {
-		const d = data.map(({ TYPE_SOINS, REGION, NBR_ACCOUCH_ET_CESARIEN, NBR_CESARIENNES, NBR_NAISS_VIVANT, NBR_MORTINAISSANC, PERIODE }) => {
-			const [_between, startDate, _and, endDate] = PERIODE.split(' ');
+	transformData(data: DonneesQuebecResponse<BirthRecordData>) {
+		if (data.success === false) {
+			return [];
+		}
+
+		return data.result.records.map((record) => {
+			const [_between, startDate, _and, endDate] = record.PERIODE?.split(' ') ?? [];
 
 			let region;
-			if (REGION === 'TOTAL PROVINCIAL') {
+			if (record.REGION === 'TOTAL PROVINCIAL') {
 				region = 'ALL';
 			} else {
-				region = `RSS${REGION.substr(0, 2)}`;
+				region = `RSS${record.REGION.substr(0, 2)}`;
 			}
 
+			const { TYPE_SOINS, NBR_ACCOUCH_ET_CESARIEN, NBR_CESARIENNES, NBR_MORTINAISSANC, NBR_NAISS_VIVANT } = record;
+
 			return {
-				care_type: TYPE_SOINS,
+				care_type: TYPE_SOINS ?? null,
 				region_code: region,
-				deliveries_and_csections: Number(NBR_ACCOUCH_ET_CESARIEN),
-				csections: Number(NBR_CESARIENNES),
-				live_births: Number(NBR_NAISS_VIVANT),
-				stillbirths: Number(NBR_MORTINAISSANC),
+				deliveries_and_csections: NBR_ACCOUCH_ET_CESARIEN ? Number(NBR_ACCOUCH_ET_CESARIEN) : null,
+				csections: NBR_CESARIENNES ? Number(NBR_CESARIENNES) : null,
+				live_births: NBR_NAISS_VIVANT ? Number(NBR_NAISS_VIVANT) : null,
+				stillbirths: NBR_MORTINAISSANC ? Number(NBR_MORTINAISSANC) : null,
 				startDate: new Date(startDate),
 				endDate: new Date(endDate),
 			};
 		});
-		return [...d, ...acc];
-	}, []);
-
-	console.log(formattedData);
-	// TODO: write data to file
+	}
 }
 
-console.log('Starting...');
-await fetchBirths();
+RESOURCE_IDS.forEach(async (resource) => {
+	const births = new Births('births', resource);
+	await births.run();
+});

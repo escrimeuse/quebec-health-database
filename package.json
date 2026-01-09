@@ -13,7 +13,8 @@
 		"fetch-data": "node src/scripts/fetchWaitlistData.mts",
 		"create-sql-schema": "node src/scripts/autogenSchema.mts",
 		"create-openapi-schema": "chanfana -o ./schema.json --env local",
-		"fetch-regions": "node src/scripts/fetchRegions.mts"
+		"fetch-regions": "node src/scripts/fetchRegions.mts",
+		"fetch-births": "node src/scripts/fetchBirths.mts"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
@@ -24,7 +25,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"axios": "^1.13.2",
 		"chanfana": "^3.0.0",
+		"itty-fetcher": "^1.0.10",
 		"itty-router": "^5.0.22",
 		"shpjs": "^6.2.0",
 		"zod": "^4.3.5"

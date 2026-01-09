@@ -170,4 +170,5 @@ dist
 .vscode/
 schema.sql
 src/data/autogen/
+src/data/donneesQuebec
 shapeFile.zip
