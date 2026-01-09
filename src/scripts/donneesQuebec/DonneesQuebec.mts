@@ -36,7 +36,15 @@ export abstract class DonneesQuebec<TRecordData, TransformedData> {
 
 	abstract getDataFromApi(): Promise<DonneesQuebecResponse<TRecordData>>;
 	abstract transformData(data: DonneesQuebecResponse<TRecordData>): TransformedData;
-	//abstract writeFile(data: TransformedData | undefined, fileName: string): void;
+
+	async writeFile(data: TransformedData | undefined) {
+		try {
+			fs.mkdirSync(`${this.writeFolder}`, { recursive: true });
+			fs.writeFileSync(`${this.writeFolder}/${this.name}-${this.resourceId}.json`, JSON.stringify(data));
+		} catch (error) {
+			console.error('There was an error writing to file: ', error);
+		}
+	}
 
 	async run() {
 		let data;
@@ -53,15 +61,6 @@ export abstract class DonneesQuebec<TRecordData, TransformedData> {
 			await this.writeFile(transformedData);
 		} catch (error) {
 			console.error('There was an error writing data to file: ', error);
-		}
-	}
-
-	async writeFile(data: TransformedData | undefined) {
-		try {
-			fs.mkdirSync(`${this.writeFolder}`, { recursive: true });
-			fs.writeFileSync(`${this.writeFolder}/${this.name}-${this.resourceId}.json`, JSON.stringify(data));
-		} catch (error) {
-			console.error('There was an error writing to file: ', error);
 		}
 	}
 }
