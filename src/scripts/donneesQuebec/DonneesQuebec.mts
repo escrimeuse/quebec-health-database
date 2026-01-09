@@ -1,5 +1,26 @@
 import fs from 'fs';
-import type { DonneesQuebecResponse } from '../types.ts';
+
+type DonneesQuebecError = {
+	help: string;
+	success: false;
+	error: {
+		__type: string;
+		message: string;
+	};
+};
+
+type DonneesQuebecSuccess<TRecord> = {
+	help: string;
+	success: true;
+	result: {
+		sql: string;
+		records: Array<TRecord>;
+		// TODO: Add better types to this
+		fields: Array<any>;
+	};
+};
+
+export type DonneesQuebecResponse<TRecord> = DonneesQuebecError | DonneesQuebecSuccess<TRecord>;
 
 export abstract class DonneesQuebec<TRecordData, TransformedData> {
 	apiUrl: string = 'https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql';

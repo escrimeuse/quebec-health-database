@@ -1,5 +1,5 @@
 import { DonneesQuebec } from './DonneesQuebec.mts';
-import type { DonneesQuebecResponse } from './types';
+import type { DonneesQuebecResponse } from './DonneesQuebec.mts';
 import axios from 'axios';
 
 const RESOURCE_IDS = [
@@ -30,11 +30,11 @@ type BirthRecordData = {
 };
 
 type TransformedBirthData = {
-	care_type: string;
-	region_code: string;
-	deliveries_and_csections: number | null;
+	careType: string;
+	regionCode: string;
+	deliveriesAndCsections: number | null;
 	csections: number | null;
-	live_births: number | null;
+	livebirths: number | null;
 	stillbirths: number | null;
 	startDate: Date;
 	endDate: Date;
@@ -64,11 +64,11 @@ class Births extends DonneesQuebec<BirthRecordData, Array<TransformedBirthData>>
 			const { TYPE_SOINS, NBR_ACCOUCH_ET_CESARIEN, NBR_CESARIENNES, NBR_MORTINAISSANC, NBR_NAISS_VIVANT } = record;
 
 			return {
-				care_type: TYPE_SOINS ?? null,
-				region_code: region,
-				deliveries_and_csections: NBR_ACCOUCH_ET_CESARIEN ? Number(NBR_ACCOUCH_ET_CESARIEN) : null,
+				careType: TYPE_SOINS ?? null,
+				regionCode: region,
+				deliveriesAndCsections: NBR_ACCOUCH_ET_CESARIEN ? Number(NBR_ACCOUCH_ET_CESARIEN) : null,
 				csections: NBR_CESARIENNES ? Number(NBR_CESARIENNES) : null,
-				live_births: NBR_NAISS_VIVANT ? Number(NBR_NAISS_VIVANT) : null,
+				livebirths: NBR_NAISS_VIVANT ? Number(NBR_NAISS_VIVANT) : null,
 				stillbirths: NBR_MORTINAISSANC ? Number(NBR_MORTINAISSANC) : null,
 				startDate: new Date(startDate),
 				endDate: new Date(endDate),
