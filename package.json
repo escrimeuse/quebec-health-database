@@ -10,11 +10,11 @@
 		"cf-typegen": "wrangler types",
 		"create-local-db": "wrangler d1 execute health-db --local --file=./schema.sql",
 		"create-remote-db": "wrangler d1 execute health-db --remote --file=./schema.sql",
-		"fetch-data": "node src/scripts/fetchWaitlistData.mts",
 		"create-sql-schema": "node src/scripts/autogenSchema.mts",
 		"create-openapi-schema": "chanfana -o ./schema.json --env local",
-		"fetch-regions": "node src/scripts/fetchRegions.mts",
-		"fetch-births": "node src/scripts/fetchBirths.mts"
+		"fetch-regions": "node src/scripts/donneesQuebec/fetchRegions.mts",
+		"fetch-births": "node src/scripts/donneesQuebec/fetchBirths.mts",
+		"fetch-data": "node src/scripts/donneesQuebec/fetchWaitlistData.mts"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",

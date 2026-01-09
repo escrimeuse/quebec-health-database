@@ -1,5 +1,5 @@
 import fs from 'fs';
-import type { DonneesQuebecResponse } from './types.ts';
+import type { DonneesQuebecResponse } from '../types.ts';
 
 export abstract class DonneesQuebec<TRecordData, TransformedData> {
 	apiUrl: string = 'https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql';
