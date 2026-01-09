@@ -58,7 +58,7 @@ class Births extends DonneesQuebec<BirthRecordData, Array<TransformedBirthData>>
 			if (record.REGION === 'TOTAL PROVINCIAL') {
 				region = 'ALL';
 			} else {
-				region = `RSS${record.REGION.substr(0, 2)}`;
+				region = `RSS${record.REGION.substring(0, 2)}`;
 			}
 
 			const { TYPE_SOINS, NBR_ACCOUCH_ET_CESARIEN, NBR_CESARIENNES, NBR_MORTINAISSANC, NBR_NAISS_VIVANT } = record;
