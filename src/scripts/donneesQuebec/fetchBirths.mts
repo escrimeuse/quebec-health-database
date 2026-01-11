@@ -1,6 +1,7 @@
 import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.mts';
 import type { DonneesQuebecResponse } from './DonneesQuebecDataExtractor.mts';
 import axios from 'axios';
+import fs from 'fs';
 
 const RESOURCE_IDS = [
 	'2971bc36-3b1e-4323-909e-c66c96bc9946', // 2024 to 2025
@@ -67,9 +68,44 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 		});
 	}
 
-	async writeSqlSchema(data: Array<TransformedBirthData>) {
-		// TODO: implement me
-		return;
+	generateSql(data: Array<TransformedBirthData>) {
+		return `${data
+			.map((data, index) => {
+				return `INSERT INTO births (id, careType, regionCode, deliveriesAndCsections, csections, livebirths, stillbirths, startDate, endDate) VALUES (${index}, "${data.careType}", "${data.regionCode}", ${data.deliveriesAndCsections}, ${data.csections}, ${data.livebirths}, ${data.stillbirths}, ${data.startDate}, ${data.endDate});`;
+			})
+			.join('\n')}
+    `;
+	}
+
+	async writeSqlFile(sql: string) {
+		try {
+			const schemaExists = fs.existsSync(`${this.schemaFolder}/${this.name}.sql`);
+
+			if (!schemaExists) {
+				fs.writeFileSync(
+					`${this.schemaFolder}/${this.name}.sql`,
+					`
+DROP TABLE IF EXISTS births;
+CREATE TABLE IF NOT EXISTS births (id INTEGER PRIMARY KEY, careType TEXT, regionCode TEXT, deliveriesAndCsections INTEGER, csections INTEGER, livebirths INTEGER, stillbirths INTEGER, startDate DATE, endDate DATE, FOREIGN KEY (region) REFERENCES regions(code));	
+${sql}
+					`
+				);
+			} else {
+				fs.appendFileSync(
+					`${this.schemaFolder}/${this.name}.sql`,
+					`
+${sql}
+					`
+				);
+			}
+		} catch (error) {
+			throw new Error('There was an error writing the SQL schema' + error);
+		}
+	}
+
+	async run() {
+		fs.rmSync(`${this.schemaFolder}/${this.name}.sql`, { recursive: true, force: true });
+		return super.run();
 	}
 }
 
