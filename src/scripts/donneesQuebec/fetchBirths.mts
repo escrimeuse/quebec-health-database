@@ -62,8 +62,8 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 				csections: NBR_CESARIENNES ? Number(NBR_CESARIENNES) : null,
 				livebirths: NBR_NAISS_VIVANT ? Number(NBR_NAISS_VIVANT) : null,
 				stillbirths: NBR_MORTINAISSANC ? Number(NBR_MORTINAISSANC) : null,
-				startDate: new Date(startDate),
-				endDate: new Date(endDate),
+				startDate: new Date(startDate).toISOString(),
+				endDate: new Date(endDate).toISOString(),
 			};
 		});
 	}
@@ -71,7 +71,7 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 	generateSql(data: Array<TransformedBirthData>) {
 		return `${data
 			.map((data, index) => {
-				return `INSERT INTO births (id, careType, regionCode, deliveriesAndCsections, csections, livebirths, stillbirths, startDate, endDate) VALUES (${index}, "${data.careType}", "${data.regionCode}", ${data.deliveriesAndCsections}, ${data.csections}, ${data.livebirths}, ${data.stillbirths}, ${data.startDate}, ${data.endDate});`;
+				return `INSERT INTO births (id, careType, region, deliveriesAndCsections, csections, livebirths, stillbirths, startDate, endDate) VALUES ("${index}-${this.resourceId}", "${data.careType}", "${data.regionCode}", ${data.deliveriesAndCsections}, ${data.csections}, ${data.livebirths}, ${data.stillbirths}, "${data.startDate}", "${data.endDate}");`;
 			})
 			.join('\n')}
     `;
@@ -86,7 +86,7 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 					`${this.schemaFolder}/${this.name}.sql`,
 					`
 DROP TABLE IF EXISTS births;
-CREATE TABLE IF NOT EXISTS births (id INTEGER PRIMARY KEY, careType TEXT, regionCode TEXT, deliveriesAndCsections INTEGER, csections INTEGER, livebirths INTEGER, stillbirths INTEGER, startDate DATE, endDate DATE, FOREIGN KEY (region) REFERENCES regions(code));	
+CREATE TABLE IF NOT EXISTS births (id STRING PRIMARY KEY, careType TEXT, region TEXT, deliveriesAndCsections INTEGER, csections INTEGER, livebirths INTEGER, stillbirths INTEGER, startDate TEXT, endDate TEXT);	
 ${sql}
 					`
 				);
