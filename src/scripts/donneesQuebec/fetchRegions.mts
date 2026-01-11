@@ -28,6 +28,8 @@ type TransformedRegionData = {
 };
 
 class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<TransformedRegionData>> {
+	// Overriding this function because we're not actually fetching the data from the API,
+	// it's coming from a ZIP file
 	async getDataFromApi() {
 		const response = await fetch(FILE_URL);
 

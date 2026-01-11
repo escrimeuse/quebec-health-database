@@ -1,3 +1,4 @@
+import axios from 'axios';
 import fs from 'fs';
 
 type DonneesQuebecError = {
@@ -34,8 +35,16 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 		this.resourceId = resourceId;
 	}
 
-	abstract getDataFromApi(): Promise<Array<TRecordData>>;
 	abstract transformData(data: Array<TRecordData>): TransformedData;
+
+	async getDataFromApi(): Promise<Array<TRecordData>> {
+		const { data } = await axios.get<DonneesQuebecResponse<TRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
+
+		if (!data.success) {
+			throw new Error('Error getting data from the API');
+		}
+		return data.result.records;
+	}
 
 	async writeFile(data: TransformedData | undefined) {
 		try {

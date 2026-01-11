@@ -29,16 +29,6 @@ type WaitlistRecordData = {
 type TransformedWaitlistData = {};
 
 class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, TransformedWaitlistData> {
-	async getDataFromApi() {
-		const { data } = await axios.get<DonneesQuebecResponse<WaitlistRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
-
-		if (!data.success) {
-			throw new Error('Error getting data from API');
-		}
-
-		return data.result.records;
-	}
-
 	transformData(data: Array<WaitlistRecordData>) {
 		const d = data.map((d) => {
 			const [years, period] = d.PeriodeAttente.split('-');
