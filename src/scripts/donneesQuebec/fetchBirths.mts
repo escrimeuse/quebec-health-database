@@ -21,7 +21,8 @@ const RESOURCE_IDS = [
 ];
 
 type BirthRecordData = {
-	TYPE_SOINS: string;
+	TYPE_SOINS: string | null;
+	TYPE_DE_SOINS: string | null;
 	REGION: string;
 	NBR_ACCOUCH_ET_CESARIEN: string | null;
 	NBR_CESARIENNES: string | null;
@@ -53,10 +54,10 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 				region = `RSS${record.REGION.substring(0, 2)}`;
 			}
 
-			const { TYPE_SOINS, NBR_ACCOUCH_ET_CESARIEN, NBR_CESARIENNES, NBR_MORTINAISSANC, NBR_NAISS_VIVANT } = record;
+			const { TYPE_SOINS, TYPE_DE_SOINS, NBR_ACCOUCH_ET_CESARIEN, NBR_CESARIENNES, NBR_MORTINAISSANC, NBR_NAISS_VIVANT } = record;
 
 			return {
-				careType: TYPE_SOINS ?? null,
+				careType: TYPE_SOINS ?? TYPE_DE_SOINS ?? '',
 				regionCode: region,
 				deliveriesAndCsections: NBR_ACCOUCH_ET_CESARIEN ? Number(NBR_ACCOUCH_ET_CESARIEN) : null,
 				csections: NBR_CESARIENNES ? Number(NBR_CESARIENNES) : null,
