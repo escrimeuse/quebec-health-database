@@ -26,9 +26,10 @@ export type DonneesQuebecResponse<TRecord> = DonneesQuebecError | DonneesQuebecS
 export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 	apiUrl: string = 'https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql';
 	writeFolder: string = './src/data/donneesQuebec/';
+	schemaFolder: string = './src/schema';
 
-	name: string | undefined;
-	resourceId: string | undefined;
+	name;
+	resourceId;
 
 	constructor(name: string, resourceId: string) {
 		this.name = name;
@@ -36,6 +37,8 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 	}
 
 	abstract transformData(data: Array<TRecordData>): TransformedData;
+
+	abstract writeSqlSchema(data: TransformedData | undefined): Promise<void>;
 
 	async getDataFromApi(): Promise<Array<TRecordData>> {
 		const { data } = await axios.get<DonneesQuebecResponse<TRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
@@ -51,7 +54,7 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 			fs.mkdirSync(`${this.writeFolder}`, { recursive: true });
 			fs.writeFileSync(`${this.writeFolder}/${this.name}-${this.resourceId}.json`, JSON.stringify(data));
 		} catch (error) {
-			console.error('There was an error writing to file: ', error);
+			throw new Error('There was an error writing to file: ' + JSON.stringify(error));
 		}
 	}
 
@@ -60,8 +63,7 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 		try {
 			data = await this.getDataFromApi();
 		} catch (error) {
-			console.error('There was an error getting the data from the API: ', error);
-			return;
+			throw new Error('There was an error getting the data from the API: ' + JSON.stringify(error));
 		}
 
 		const transformedData = data ? this.transformData(data) : undefined;
@@ -70,7 +72,14 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 			fs.mkdirSync(this.writeFolder, { recursive: true });
 			await this.writeFile(transformedData);
 		} catch (error) {
-			console.error('There was an error writing data to file: ', error);
+			throw new Error('There was an error writing data to file: ' + JSON.stringify(error));
+		}
+
+		try {
+			fs.mkdirSync(this.schemaFolder, { recursive: true });
+			await this.writeSqlSchema(transformedData);
+		} catch (error) {
+			throw new Error('There was an error writing SQL schema to file: ' + JSON.stringify(error));
 		}
 
 		return data;

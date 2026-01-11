@@ -66,6 +66,11 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 			};
 		});
 	}
+
+	async writeSqlSchema(data: Array<TransformedBirthData>) {
+		// TODO: implement me
+		return;
+	}
 }
 
 RESOURCE_IDS.forEach(async (resource) => {

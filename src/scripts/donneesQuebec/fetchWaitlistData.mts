@@ -1,5 +1,5 @@
 import { DonneesQuebecDataExtractor, type DonneesQuebecResponse } from './DonneesQuebecDataExtractor.mts';
-import axios from 'axios';
+import fs from 'fs';
 
 const DELAY_MAP = {
 	'0 à 6 mois': '0_6',
@@ -26,9 +26,25 @@ type WaitlistRecordData = {
 	[`Delais_d'attente`]: '0 à 6 mois' | '6 à 12 mois' | "Plus d'1 an";
 };
 
-type TransformedWaitlistData = {};
+type TransformedWaitlistData = {
+	region: string;
+	year: string;
+	delay: string;
+	period: string;
+	total: number | null;
+	other: number | null;
+	general: number | null;
+	orthopedic: number | null;
+	plastic: number | null;
+	vascular: number | null;
+	neuro: number | null;
+	entf: number | null;
+	obgyn: number | null;
+	opthamology: number | null;
+	urology: number | null;
+};
 
-class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, TransformedWaitlistData> {
+class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, Array<TransformedWaitlistData>> {
 	transformData(data: Array<WaitlistRecordData>) {
 		const d = data.map((d) => {
 			const [years, period] = d.PeriodeAttente.split('-');
@@ -53,6 +69,25 @@ class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, Transforme
 		});
 
 		return d;
+	}
+
+	async writeSqlSchema(data: Array<TransformedWaitlistData>) {
+		const sql = `
+DROP TABLE IF EXISTS waitlist;
+CREATE TABLE IF NOT EXISTS waitlist (id INTEGER PRIMARY KEY, region TEXT, year TEXT, period TEXT, delay TEXT, total INTEGER, other INTEGER, general INTEGER, orthopedic INTEGER, plastic INTEGER, vascular INTEGER, neuro INTEGER, entf INTEGER, obgyn INTEGER, opthamology INTEGER, urology INTEGER, FOREIGN KEY (region) REFERENCES regions(code));
+${data
+	.map((data, index) => {
+		return `INSERT INTO waitlist (id, region, year, period, delay, total, other, general, orthopedic, plastic, vascular, neuro, entf, obgyn, opthamology, urology) VALUES (${index}, "${data.region}", "${data.year}", "${data.period}", "${data.delay}", ${data.total}, ${data.other}, ${data.general}, ${data.orthopedic}, ${data.plastic}, ${data.vascular}, ${data.neuro}, ${data.entf}, ${data.obgyn}, ${data.opthamology}, ${data.urology});`;
+	})
+	.join('\n')}
+    `;
+
+		try {
+			fs.mkdirSync(this.schemaFolder, { recursive: true });
+			fs.writeFileSync(`${this.schemaFolder}/waitlist.sql`, sql);
+		} catch (error) {
+			throw new Error('There was an error writing the SQL schema' + error);
+		}
 	}
 }
 

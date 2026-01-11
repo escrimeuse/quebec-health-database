@@ -171,4 +171,5 @@ dist
 schema.sql
 src/data/autogen/
 src/data/donneesQuebec
+src/schema
 shapeFile.zip
