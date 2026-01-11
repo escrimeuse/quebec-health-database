@@ -44,8 +44,8 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 	async getDataFromApi() {
 		const { data } = await axios.get<DonneesQuebecResponse<BirthRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
 
-		if (data.success === false) {
-			return [];
+		if (!data.success) {
+			throw new Error('Error getting data from the API');
 		}
 		return data.result.records;
 	}

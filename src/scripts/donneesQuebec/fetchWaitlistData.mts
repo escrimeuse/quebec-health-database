@@ -1,59 +1,70 @@
-import fs from 'fs';
+import { DonneesQuebecDataExtractor, type DonneesQuebecResponse } from './DonneesQuebecDataExtractor.mts';
+import axios from 'axios';
 
 const DELAY_MAP = {
-    '0 à 6 mois': '0_6',
-    '6 à 12 mois': '6_12',
-    'Plus d\'1 an': '12_plus'
+	'0 à 6 mois': '0_6',
+	'6 à 12 mois': '6_12',
+	"Plus d'1 an": '12_plus',
 };
 
-async function getData() {
-    const response = await fetch('https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql?sql=SELECT%20*%20from%20%227c83f4be-bc3a-4756-86db-115e8ead93f1%22')
+type WaitlistRecordData = {
+	PeriodeAttente: string;
+	Region: string;
+	year: string;
+	delay: string;
+	Total: number | null;
+	Autres: number | null;
+	Chirurgie_generale: number | null;
+	Chirurgie_orthopedique: number | null;
+	Chirurgie_plastique: number | null;
+	Chirurgie_vasculaire: number | null;
+	Neurochirurgie: number | null;
+	ORL_chirurgie_cervico_faciale: number | null;
+	Obstetrique_et_gynecologie: number | null;
+	Ophtalmologie: number | null;
+	Urologie: number | null;
+	[`Delais_d'attente`]: '0 à 6 mois' | '6 à 12 mois' | "Plus d'1 an";
+};
 
-    const data = await response.json();
+type TransformedWaitlistData = {};
 
-    return data.result.records;
+class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, TransformedWaitlistData> {
+	async getDataFromApi() {
+		const { data } = await axios.get<DonneesQuebecResponse<WaitlistRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
+
+		if (!data.success) {
+			throw new Error('Error getting data from API');
+		}
+
+		return data.result.records;
+	}
+
+	transformData(data: Array<WaitlistRecordData>) {
+		const d = data.map((d) => {
+			const [years, period] = d.PeriodeAttente.split('-');
+
+			return {
+				region: d.Region,
+				year: `20${years.substring(0, 2)}`,
+				delay: DELAY_MAP[d["Delais_d'attente"]],
+				period,
+				total: d.Total === null ? null : Number(d.Total),
+				other: d.Autres === null ? null : Number(d.Autres),
+				general: d.Chirurgie_generale === null ? null : Number(d.Chirurgie_generale),
+				orthopedic: d.Chirurgie_orthopedique === null ? null : Number(d.Chirurgie_orthopedique),
+				plastic: d.Chirurgie_plastique === null ? null : Number(d.Chirurgie_plastique),
+				vascular: d.Chirurgie_vasculaire === null ? null : Number(d.Chirurgie_vasculaire),
+				neuro: d.Neurochirurgie === null ? null : Number(d.Neurochirurgie),
+				entf: d.ORL_chirurgie_cervico_faciale === null ? null : Number(d.ORL_chirurgie_cervico_faciale),
+				obgyn: d.Obstetrique_et_gynecologie === null ? null : Number(d.Obstetrique_et_gynecologie),
+				opthamology: d.Ophtalmologie === null ? null : Number(d.Ophtalmologie),
+				urology: d.Urologie === null ? null : Number(d.Urologie),
+			};
+		});
+
+		return d;
+	}
 }
 
-function transformData(data: any) {
-    return data.map((d) => {
-        const [years, period] = d.PeriodeAttente.split('-')
-        
-        return {
-            region: d.Region,
-            year: `20${years.substr(0, 2)}`,
-            delay: DELAY_MAP[d['Delais_d\'attente']],
-            period,
-            total: d.Total,
-            other: d.Autres,
-            general: d.Chirurgie_generale,
-            orthopedic: d.Chirurgie_orthopedique,
-            plastic: d.Chirurgie_plastique,
-            vascular: d.Chirurgie_vasculaire,
-            neuro: d.Neurochirurgie,
-            entf: d.ORL_chirurgie_cervico_faciale,
-            obgyn: d.Obstetrique_et_gynecologie,
-            opthamology: d.Ophtalmologie,
-            urology: d.Urologie,
-        }
-    })
-} 
-
-
-async function fetchData() {
-    console.log("Fetching data from DonneesQuebec ... ")
-    const data = await getData()
-
-    console.log("Transforming data ...")
-    const transformedData = transformData(data);
-
-    try {
-        console.log("Writing to file healthData.json ...")
-        fs.mkdirSync('src/data/autogen', {recursive: true});
-        fs.writeFileSync('src/data/autogen/waitlist.json', JSON.stringify(transformedData))
-        console.log("Success!")
-    } catch (error) {
-        console.log("Error: ", error)
-    }
-}
-
-fetchData();
+const waitlist = new Waitlist('waitlist', '7c83f4be-bc3a-4756-86db-115e8ead93f1');
+await waitlist.run();

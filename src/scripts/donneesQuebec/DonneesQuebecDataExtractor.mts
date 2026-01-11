@@ -52,6 +52,7 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 			data = await this.getDataFromApi();
 		} catch (error) {
 			console.error('There was an error getting the data from the API: ', error);
+			return;
 		}
 
 		const transformedData = data ? this.transformData(data) : undefined;
