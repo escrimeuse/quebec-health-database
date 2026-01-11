@@ -34,8 +34,8 @@ export abstract class DonneesQuebec<TRecordData, TransformedData> {
 		this.resourceId = resourceId;
 	}
 
-	abstract getDataFromApi(): Promise<DonneesQuebecResponse<TRecordData>>;
-	abstract transformData(data: DonneesQuebecResponse<TRecordData>): TransformedData;
+	abstract getDataFromApi(): Promise<Array<TRecordData>>;
+	abstract transformData(data: Array<TRecordData>): TransformedData;
 
 	async writeFile(data: TransformedData | undefined) {
 		try {
@@ -62,5 +62,7 @@ export abstract class DonneesQuebec<TRecordData, TransformedData> {
 		} catch (error) {
 			console.error('There was an error writing data to file: ', error);
 		}
+
+		return data;
 	}
 }

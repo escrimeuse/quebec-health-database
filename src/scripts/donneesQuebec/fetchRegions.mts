@@ -1,65 +1,94 @@
 import shp from 'shpjs';
 import fs from 'fs';
 import { Writable } from 'stream';
+import { DonneesQuebec, type DonneesQuebecResponse } from './DonneesQuebec.mts';
 
 const FILE_URL = 'https://publications.msss.gouv.qc.ca/msss/fichiers/statistiques/cartes/territoires_rss_2025.zip';
 
-async function downloadShapeFile() {
-	const response = await fetch(FILE_URL);
+type RegionRecordData = {
+	type: 'FeatureCollection';
+	features: Array<{
+		type: 'Feature';
+		geometry: JSON;
+		properties: {
+			RSS_code: string;
+			RSS_nom: string;
+			Etiquette: string;
+			Version: Date;
+			Shape_Leng: number;
+			Shapre_Area: number;
+		};
+	}>;
+};
 
-	if (!response || !response.ok) {
-		console.error('Failed to load shapefile :', response);
-	}
+type TransformedRegionData = {
+	code: string;
+	name: string;
+	validAsOf: Date;
+};
 
-	try {
-		fs.mkdirSync('./temp/');
-		const writer = Writable.toWeb(fs.createWriteStream('./temp/shapeFile.zip'));
+// Region data is a bit special because we're pulling it from a ZIP file,
+// not from the API, so the data types don't match up. I didn't want to write
+// a whole new class type for this, so I'm making due with making the types match
+// what typescript wants.
+class Regions extends DonneesQuebec<RegionRecordData, Array<TransformedRegionData>> {
+	async getDataFromApi() {
+		const response = await fetch(FILE_URL);
 
-		await response.body?.pipeTo(writer);
-	} catch (error) {
-		console.error('Error writing data to temporary file: ', error);
+		if (!response || !response.ok) {
+			console.error('Failed to load shapefile :', response);
+		}
+
+		try {
+			fs.mkdirSync('./temp/', { recursive: true });
+			const writer = Writable.toWeb(fs.createWriteStream('./temp/shapeFile.zip'));
+
+			await response.body?.pipeTo(writer);
+		} catch (error) {
+			console.error('Error writing data to temporary file: ', error);
+			fs.rmSync('./temp', { recursive: true });
+		}
+
+		const data = fs.readFileSync('./temp/shapeFile.zip');
 		fs.rmSync('./temp', { recursive: true });
-	}
-}
-
-async function writeRegionShapeFiles() {
-	try {
-		const data = fs.readFileSync('./temp/shapeFile.zip');
 		const geoJson = await shp(data);
 
-		fs.mkdirSync('./src/data/autogen/shapeFiles/', { recursive: true });
-
-		geoJson.features.forEach((feature) => {
-			fs.writeFileSync(`./src/data/autogen/shapeFiles/${feature.properties.RSS_code}.json`, JSON.stringify(feature));
-		});
-	} catch (error) {
-		console.error('There was an error writing the region shape file: ', error);
+		return [geoJson];
 	}
-}
 
-async function writeRegionDataFile() {
-	try {
-		const data = fs.readFileSync('./temp/shapeFile.zip');
-		const geoJson = await shp(data);
-
-		const regions = geoJson.features.map((region) => {
+	transformData(data: Array<RegionRecordData>) {
+		return data[0].features.map((region) => {
 			return {
 				code: `RSS${region.properties.RSS_code}`,
 				name: region.properties.RSS_nom,
-				valid_as_of: region.properties.Version,
+				validAsOf: region.properties.Version,
 			};
 		});
+	}
 
-		fs.mkdirSync('src/data/autogen', { recursive: true });
-		fs.writeFileSync('./src/data/autogen/regions.json', JSON.stringify(regions));
-	} catch (error) {
-		console.error('There was an error writing the region data file: ', error);
+	async writeRegionShapeFiles(data: Array<RegionRecordData>) {
+		try {
+			fs.mkdirSync('./src/data/donneesQuebec/shapeFiles/', { recursive: true });
+
+			data[0].features.forEach((feature) => {
+				fs.writeFileSync(`./src/data/donneesQuebec/shapeFiles/${feature.properties.RSS_code}.json`, JSON.stringify(feature));
+			});
+		} catch (error) {
+			console.error('There was an error writing the region shape file: ', error);
+		}
+	}
+
+	async run() {
+		const data = await super.run();
+		if (!data) {
+			return;
+		}
+
+		await this.writeRegionShapeFiles(data);
+
+		return data;
 	}
 }
 
-console.log('download file');
-await downloadShapeFile();
-await writeRegionShapeFiles();
-await writeRegionDataFile();
-fs.rmSync('./temp', { recursive: true });
-console.log('done');
+const regions = new Regions('regions', 'none');
+await regions.run();

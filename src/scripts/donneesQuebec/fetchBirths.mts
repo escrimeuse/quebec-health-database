@@ -43,15 +43,15 @@ type TransformedBirthData = {
 class Births extends DonneesQuebec<BirthRecordData, Array<TransformedBirthData>> {
 	async getDataFromApi() {
 		const { data } = await axios.get<DonneesQuebecResponse<BirthRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
-		return data;
-	}
 
-	transformData(data: DonneesQuebecResponse<BirthRecordData>) {
 		if (data.success === false) {
 			return [];
 		}
+		return data.result.records;
+	}
 
-		return data.result.records.map((record) => {
+	transformData(data: Array<BirthRecordData>) {
+		return data.map((record) => {
 			const [_between, startDate, _and, endDate] = record.PERIODE?.split(' ') ?? [];
 
 			let region;
