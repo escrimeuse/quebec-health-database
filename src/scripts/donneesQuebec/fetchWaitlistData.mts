@@ -71,8 +71,8 @@ class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, Array<Tran
 		return d;
 	}
 
-	async writeSqlSchema(data: Array<TransformedWaitlistData>) {
-		const sql = `
+	generateSql(data: Array<TransformedWaitlistData>) {
+		return `
 DROP TABLE IF EXISTS waitlist;
 CREATE TABLE IF NOT EXISTS waitlist (id INTEGER PRIMARY KEY, region TEXT, year TEXT, period TEXT, delay TEXT, total INTEGER, other INTEGER, general INTEGER, orthopedic INTEGER, plastic INTEGER, vascular INTEGER, neuro INTEGER, entf INTEGER, obgyn INTEGER, opthamology INTEGER, urology INTEGER, FOREIGN KEY (region) REFERENCES regions(code));
 ${data
@@ -81,13 +81,6 @@ ${data
 	})
 	.join('\n')}
     `;
-
-		try {
-			fs.mkdirSync(this.schemaFolder, { recursive: true });
-			fs.writeFileSync(`${this.schemaFolder}/waitlist.sql`, sql);
-		} catch (error) {
-			throw new Error('There was an error writing the SQL schema' + error);
-		}
 	}
 }
 

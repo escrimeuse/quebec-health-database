@@ -37,8 +37,7 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 	}
 
 	abstract transformData(data: Array<TRecordData>): TransformedData;
-
-	abstract writeSqlSchema(data: TransformedData | undefined): Promise<void>;
+	abstract generateSql(data: TransformedData): string;
 
 	async getDataFromApi(): Promise<Array<TRecordData>> {
 		const { data } = await axios.get<DonneesQuebecResponse<TRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
@@ -58,6 +57,15 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 		}
 	}
 
+	async writeSqlFile(sql: string) {
+		try {
+			fs.mkdirSync(this.schemaFolder, { recursive: true });
+			fs.writeFileSync(`${this.schemaFolder}/${this.name}.sql`, sql);
+		} catch (error) {
+			throw new Error('There was an error writing the SQL schema' + error);
+		}
+	}
+
 	async run() {
 		let data;
 		try {
@@ -66,7 +74,11 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 			throw new Error('There was an error getting the data from the API: ' + JSON.stringify(error));
 		}
 
-		const transformedData = data ? this.transformData(data) : undefined;
+		if (!data) {
+			throw new Error('No data for this resource');
+		}
+
+		const transformedData = this.transformData(data);
 
 		try {
 			fs.mkdirSync(this.writeFolder, { recursive: true });
@@ -77,7 +89,7 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 
 		try {
 			fs.mkdirSync(this.schemaFolder, { recursive: true });
-			await this.writeSqlSchema(transformedData);
+			await this.writeSqlFile(this.generateSql(transformedData));
 		} catch (error) {
 			throw new Error('There was an error writing SQL schema to file: ' + JSON.stringify(error));
 		}

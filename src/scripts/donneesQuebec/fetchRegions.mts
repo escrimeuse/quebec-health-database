@@ -76,11 +76,20 @@ class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<Transfo
 		}
 	}
 
+	generateSql(data: TransformedRegionData[]) {
+		return `
+DROP TABLE IF EXISTS regions;
+CREATE TABLE IF NOT EXISTS regions (code TEXT PRIMARY KEY, name TEXT);
+${data
+	.map((data) => {
+		return `INSERT INTO regions (code, name) VALUES ("${data.code}", "${data.name}");`;
+	})
+	.join('\n')}
+    `;
+	}
+
 	async run() {
 		const data = await super.run();
-		if (!data) {
-			return;
-		}
 
 		await this.writeRegionShapeFiles(data);
 
