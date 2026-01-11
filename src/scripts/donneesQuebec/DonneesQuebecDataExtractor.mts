@@ -22,7 +22,7 @@ type DonneesQuebecSuccess<TRecord> = {
 
 export type DonneesQuebecResponse<TRecord> = DonneesQuebecError | DonneesQuebecSuccess<TRecord>;
 
-export abstract class DonneesQuebec<TRecordData, TransformedData> {
+export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 	apiUrl: string = 'https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql';
 	writeFolder: string = './src/data/donneesQuebec/';
 

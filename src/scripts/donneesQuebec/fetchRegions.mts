@@ -1,7 +1,7 @@
 import shp from 'shpjs';
 import fs from 'fs';
 import { Writable } from 'stream';
-import { DonneesQuebec, type DonneesQuebecResponse } from './DonneesQuebec.mts';
+import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.mts';
 
 const FILE_URL = 'https://publications.msss.gouv.qc.ca/msss/fichiers/statistiques/cartes/territoires_rss_2025.zip';
 
@@ -27,11 +27,7 @@ type TransformedRegionData = {
 	validAsOf: Date;
 };
 
-// Region data is a bit special because we're pulling it from a ZIP file,
-// not from the API, so the data types don't match up. I didn't want to write
-// a whole new class type for this, so I'm making due with making the types match
-// what typescript wants.
-class Regions extends DonneesQuebec<RegionRecordData, Array<TransformedRegionData>> {
+class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<TransformedRegionData>> {
 	async getDataFromApi() {
 		const response = await fetch(FILE_URL);
 

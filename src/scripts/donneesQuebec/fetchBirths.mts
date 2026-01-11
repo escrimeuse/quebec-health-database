@@ -1,5 +1,5 @@
-import { DonneesQuebec } from './DonneesQuebec.mts';
-import type { DonneesQuebecResponse } from './DonneesQuebec.mts';
+import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.mts';
+import type { DonneesQuebecResponse } from './DonneesQuebecDataExtractor.mts';
 import axios from 'axios';
 
 const RESOURCE_IDS = [
@@ -40,7 +40,7 @@ type TransformedBirthData = {
 	endDate: Date;
 };
 
-class Births extends DonneesQuebec<BirthRecordData, Array<TransformedBirthData>> {
+class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<TransformedBirthData>> {
 	async getDataFromApi() {
 		const { data } = await axios.get<DonneesQuebecResponse<BirthRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
 
