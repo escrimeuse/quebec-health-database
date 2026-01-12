@@ -38,8 +38,8 @@ type TransformedBirthData = {
 	csections: number | null;
 	livebirths: number | null;
 	stillbirths: number | null;
-	startDate: Date;
-	endDate: Date;
+	startDate: string;
+	endDate: string;
 };
 
 class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<TransformedBirthData>> {
