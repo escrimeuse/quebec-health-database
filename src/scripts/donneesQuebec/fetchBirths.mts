@@ -87,7 +87,7 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 					`${this.schemaFolder}/${this.name}.sql`,
 					`
 DROP TABLE IF EXISTS births;
-CREATE TABLE IF NOT EXISTS births (id STRING PRIMARY KEY, careType TEXT, region TEXT, deliveriesAndCsections INTEGER, csections INTEGER, livebirths INTEGER, stillbirths INTEGER, startDate TEXT, endDate TEXT);	
+CREATE TABLE IF NOT EXISTS births (id TEXT PRIMARY KEY, careType TEXT, region TEXT, deliveriesAndCsections INTEGER, csections INTEGER, livebirths INTEGER, stillbirths INTEGER, startDate TEXT, endDate TEXT);	
 ${sql}
 					`
 				);
