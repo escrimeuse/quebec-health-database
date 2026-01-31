@@ -1,7 +1,7 @@
 import shp from 'shpjs';
 import fs from 'fs';
 import { Writable } from 'stream';
-import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.mts';
+import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.ts';
 
 const FILE_URL = 'https://publications.msss.gouv.qc.ca/msss/fichiers/statistiques/cartes/territoires_rss_2025.zip';
 

@@ -1,4 +1,4 @@
-import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.mts';
+import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.ts';
 
 const RESOURCE_ID = `841b69a5-d420-42d5-b127-c2850b88f63b`;
 

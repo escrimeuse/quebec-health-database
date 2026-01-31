@@ -1,4 +1,4 @@
-import { DonneesQuebecDataExtractor, type DonneesQuebecResponse } from './DonneesQuebecDataExtractor.mts';
+import { DonneesQuebecDataExtractor, type DonneesQuebecResponse } from './DonneesQuebecDataExtractor.ts';
 import fs from 'fs';
 
 const DELAY_MAP = {
