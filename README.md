@@ -32,23 +32,23 @@ These scripts will save the extracted data into `./src/data/extracted` _and_ wri
 Next, you'll want to populate your local DB:
 
 ```shell
-wrangler d1 execute health-db --local --file=./src/schema/<schema_file>
+npm run create-local-db -- --file=./src/schema/<schema_file>
 ```
 
 To query the local DB, you can do:
 
 ```shell
-npx wrangler execute health-db --local --command="<your SQLite command>"
+npm run query-local-db -- --command="<your SQLite command>"
 ```
 
-ex: `npx wrangler d1 execute health-db --local --command="SELECT * FROM Waitlist WHERE region_id=6 AND delay='12_plus' LIMIT 10"`
+ex: `npm run query-local-db -- --command="SELECT * FROM waitlist WHERE region='RSS06' LIMIT 10"`
 
 ## Deployment
 
 To populate the remote DB (make sure you've fetched the DonneesQuebec data first and have generated the schema file):
 
 ```shell
-wrangler d1 execute health-db --remote --file=./src/schema/<schema_file>
+npm run create-local-db -- --file=./src/schema/<schema_file>
 ```
 
 To deploy the Worker:
