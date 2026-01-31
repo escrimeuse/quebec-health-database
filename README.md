@@ -19,24 +19,20 @@ Currently, when deployed the only accepted origin is my personal CF worker domai
 
 ## Local Dev
 
-First you'll want to grab the data from DonneesQuebec:
+First you'll want to grab the data from DonneesQuebec. You can do this by running the various `extract-*` scripts.
 
 ```shell
-npm run fetch-data
+npm run extract-waitlist
+npm run extract-births
+npm run extract-regions
 ```
 
-This command will grab the data and write it to a local file `src/data/autogen/waitlist.json`.
-
-Next, you'll need to generate the DB schema file:
-
-```shell
-npm run autogen-sql-schema
-```
+These scripts will save the extracted data into `./src/data/extracted` _and_ write a schema file to `./src/schema`
 
 Next, you'll want to populate your local DB:
 
 ```shell
-npm run create-local-db
+wrangler d1 execute health-db --local --file=./src/schema/<schema_file>
 ```
 
 To query the local DB, you can do:
@@ -52,7 +48,7 @@ ex: `npx wrangler d1 execute health-db --local --command="SELECT * FROM Waitlist
 To populate the remote DB (make sure you've fetched the DonneesQuebec data first and have generated the schema file):
 
 ```shell
-npm run create-remote-db
+wrangler d1 execute health-db --remote --file=./src/schema/<schema_file>
 ```
 
 To deploy the Worker:

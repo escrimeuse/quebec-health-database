@@ -43,7 +43,7 @@ type TransformedWaitlistData = {
 	urology: number | null;
 };
 
-class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, Array<TransformedWaitlistData>> {
+export class Waitlist extends DonneesQuebecDataExtractor<WaitlistRecordData, Array<TransformedWaitlistData>> {
 	transformData(data: Array<WaitlistRecordData>) {
 		const d = data.map((d) => {
 			const [years, period] = d.PeriodeAttente.split('-');
@@ -82,6 +82,3 @@ ${data
     `;
 	}
 }
-
-const waitlist = new Waitlist('waitlist', '7c83f4be-bc3a-4756-86db-115e8ead93f1');
-await waitlist.run();

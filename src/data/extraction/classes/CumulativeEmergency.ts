@@ -1,6 +1,6 @@
 import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.ts';
 
-const RESOURCE_ID = `841b69a5-d420-42d5-b127-c2850b88f63b`;
+export const RESOURCE_ID = `841b69a5-d420-42d5-b127-c2850b88f63b`;
 
 type CumulativelEmergencyRecord = {
 	annee: string | null;
@@ -58,7 +58,7 @@ type TransformedCumulativeEmergencyData = {
 	delayUntilSeenStretchers: number | null;
 };
 
-class CumulativeEmergency extends DonneesQuebecDataExtractor<CumulativelEmergencyRecord, Array<TransformedCumulativeEmergencyData>> {
+export class CumulativeEmergency extends DonneesQuebecDataExtractor<CumulativelEmergencyRecord, Array<TransformedCumulativeEmergencyData>> {
 	transformData(data: CumulativelEmergencyRecord[]): TransformedCumulativeEmergencyData[] {
 		const transformNumber = (numberAsString: string | null): number | null => {
 			return numberAsString ? Number(numberAsString) : null;
@@ -111,6 +111,3 @@ ${data
 `;
 	}
 }
-
-const emergencyData = new CumulativeEmergency('emergency', RESOURCE_ID);
-await emergencyData.run();

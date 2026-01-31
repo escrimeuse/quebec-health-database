@@ -1,5 +1,6 @@
 import { contentJson, OpenAPIRoute } from 'chanfana';
 import { z } from 'zod';
+import { Environment } from '../types';
 
 export class RegionsEndpoint extends OpenAPIRoute {
 	schema = {
@@ -11,14 +12,14 @@ export class RegionsEndpoint extends OpenAPIRoute {
 						z.object({
 							code: z.string(),
 							name: z.string(),
-						})
-					)
+						}),
+					),
 				),
 			},
 		},
 	};
 
-	async handle(request: Request, env, ctx) {
+	async handle(request: Request, env: Environment, ctx: ExecutionContext) {
 		const { results } = await env.health_db.prepare('SELECT * FROM regions').run();
 
 		return results;

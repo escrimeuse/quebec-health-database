@@ -1,7 +1,7 @@
-import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.ts';
 import fs from 'fs';
+import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.ts';
 
-const RESOURCE_IDS = [
+export const RESOURCE_IDS = [
 	'2971bc36-3b1e-4323-909e-c66c96bc9946', // 2024 to 2025
 	'df36cf4a-d089-4bda-8275-34e729c8be67', // 2023 to 2024
 	'6ab1cfa7-a685-412b-a639-a80516227994', // 2022 to 2023
@@ -40,7 +40,7 @@ type TransformedBirthData = {
 	endDate: string;
 };
 
-class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<TransformedBirthData>> {
+export class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<TransformedBirthData>> {
 	transformData(data: Array<BirthRecordData>) {
 		return data.map((record) => {
 			const [_between, startDate, _and, endDate] = record.PERIODE?.split(' ') ?? [];
@@ -107,8 +107,3 @@ ${sql}
 		return super.run();
 	}
 }
-
-RESOURCE_IDS.forEach(async (resource) => {
-	const births = new Births('births', resource);
-	await births.run();
-});

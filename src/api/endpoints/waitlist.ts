@@ -1,5 +1,6 @@
 import { contentJson, OpenAPIRoute } from 'chanfana';
 import { z } from 'zod';
+import { Environment } from '../types';
 
 export class WaitlistEndpoint extends OpenAPIRoute {
 	schema = {
@@ -50,13 +51,13 @@ export class WaitlistEndpoint extends OpenAPIRoute {
 						obgyn: z.number().nullable(),
 						opthamology: z.number().nullable(),
 						urology: z.number().nullable(),
-					})
+					}),
 				),
 			},
 		},
 	};
 
-	async handle(request: Request, env, ctx) {
+	async handle(request: Request, env: Environment, ctx: ExecutionContext) {
 		const req = await this.getValidatedData<typeof this.schema>();
 		const { delay, region } = req.query;
 

@@ -27,7 +27,7 @@ type TransformedRegionData = {
 	validAsOf: Date;
 };
 
-class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<TransformedRegionData>> {
+export class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<TransformedRegionData>> {
 	// Overriding this function because we're not actually fetching the data from the API,
 	// it's coming from a ZIP file
 	async getDataFromApi() {
@@ -97,6 +97,3 @@ ${data
 		return data;
 	}
 }
-
-const regions = new Regions('regions', 'none');
-await regions.run();
