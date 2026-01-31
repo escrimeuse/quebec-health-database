@@ -23,7 +23,7 @@ type DonneesQuebecSuccess<TRecord> = {
 
 export type DonneesQuebecResponse<TRecord> = DonneesQuebecError | DonneesQuebecSuccess<TRecord>;
 
-export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
+export abstract class DonneesQuebecDataExtractor<TRecordData, TTransformedData> {
 	apiUrl: string = 'https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql';
 	writeFolder: string = './src/data/extracted/';
 	schemaFolder: string = './src/schema';
@@ -36,8 +36,8 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 		this.resourceId = resourceId;
 	}
 
-	abstract transformData(data: Array<TRecordData>): TransformedData;
-	abstract generateSql(data: TransformedData): string;
+	abstract transformData(data: Array<TRecordData>): TTransformedData;
+	abstract generateSql(data: TTransformedData): string;
 
 	async getDataFromApi(): Promise<Array<TRecordData>> {
 		const { data } = await axios.get<DonneesQuebecResponse<TRecordData>>(`${this.apiUrl}?sql=SELECT * from "${this.resourceId}"`);
@@ -48,7 +48,7 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 		return data.result.records;
 	}
 
-	async writeFile(data: TransformedData | undefined) {
+	async writeFile(data: TTransformedData | undefined) {
 		try {
 			fs.mkdirSync(`${this.writeFolder}`, { recursive: true });
 			fs.writeFileSync(`${this.writeFolder}/${this.name}-${this.resourceId}.json`, JSON.stringify(data));
@@ -78,18 +78,18 @@ export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 			throw new Error('No data for this resource');
 		}
 
-		const transformedData = this.transformData(data);
+		const TTransformedData = this.transformData(data);
 
 		try {
 			fs.mkdirSync(this.writeFolder, { recursive: true });
-			await this.writeFile(transformedData);
+			await this.writeFile(TTransformedData);
 		} catch (error) {
 			throw new Error('There was an error writing data to file: ' + JSON.stringify(error));
 		}
 
 		try {
 			fs.mkdirSync(this.schemaFolder, { recursive: true });
-			await this.writeSqlFile(this.generateSql(transformedData));
+			await this.writeSqlFile(this.generateSql(TTransformedData));
 		} catch (error) {
 			throw new Error('There was an error writing SQL schema to file: ' + JSON.stringify(error));
 		}
