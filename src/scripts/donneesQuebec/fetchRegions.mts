@@ -80,6 +80,7 @@ class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<Transfo
 		return `
 DROP TABLE IF EXISTS regions;
 CREATE TABLE IF NOT EXISTS regions (code TEXT PRIMARY KEY, name TEXT);
+INSERT INTO regions (code, name) VALUES ("RSS99", "All Regions");
 ${data
 	.map((data) => {
 		return `INSERT INTO regions (code, name) VALUES ("${data.code}", "${data.name}");`;

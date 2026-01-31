@@ -60,8 +60,6 @@ type TransformedCumulativeEmergencyData = {
 
 class CumulativeEmergencyData extends DonneesQuebecDataExtractor<CumulativelEmergencyRecord, Array<TransformedCumulativeEmergencyData>> {
 	transformData(data: CumulativelEmergencyRecord[]): TransformedCumulativeEmergencyData[] {
-		console.log('data', data);
-
 		const transformNumber = (numberAsString: string | null): number | null => {
 			return numberAsString ? Number(numberAsString) : null;
 		};

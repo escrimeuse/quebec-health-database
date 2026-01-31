@@ -49,7 +49,7 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 
 			let region;
 			if (record.REGION === 'TOTAL PROVINCIAL') {
-				region = 'ALL';
+				region = 'RSSALL';
 			} else {
 				region = `RSS${record.REGION.substring(0, 2)}`;
 			}
@@ -89,14 +89,14 @@ class Births extends DonneesQuebecDataExtractor<BirthRecordData, Array<Transform
 DROP TABLE IF EXISTS births;
 CREATE TABLE IF NOT EXISTS births (id TEXT PRIMARY KEY, careType TEXT, region TEXT, deliveriesAndCsections INTEGER, csections INTEGER, livebirths INTEGER, stillbirths INTEGER, startDate TEXT, endDate TEXT);	
 ${sql}
-					`
+					`,
 				);
 			} else {
 				fs.appendFileSync(
 					`${this.schemaFolder}/${this.name}.sql`,
 					`
 ${sql}
-					`
+					`,
 				);
 			}
 		} catch (error) {
