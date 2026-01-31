@@ -12,9 +12,9 @@
 		"create-remote-db": "wrangler d1 execute health-db --remote --file=./schema.sql",
 		"create-sql-schema": "node src/scripts/autogenSchema.mts",
 		"create-openapi-schema": "chanfana -o ./schema.json --env local",
-		"fetch-regions": "node src/scripts/donneesQuebec/fetchRegions.mts",
-		"fetch-births": "node src/scripts/donneesQuebec/fetchBirths.mts",
-		"fetch-data": "node src/scripts/donneesQuebec/fetchWaitlistData.mts"
+		"fetch-regions": "node src/data/extraction/fetchRegions.mts",
+		"fetch-births": "node src/data/extraction/fetchBirths.mts",
+		"fetch-data": "node src/data/extraction/fetchWaitlistData.mts"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",

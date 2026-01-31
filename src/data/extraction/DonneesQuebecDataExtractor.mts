@@ -25,7 +25,7 @@ export type DonneesQuebecResponse<TRecord> = DonneesQuebecError | DonneesQuebecS
 
 export abstract class DonneesQuebecDataExtractor<TRecordData, TransformedData> {
 	apiUrl: string = 'https://www.donneesquebec.ca/recherche/api/3/action/datastore_search_sql';
-	writeFolder: string = './src/data/donneesQuebec/';
+	writeFolder: string = './src/data/extracted/';
 	schemaFolder: string = './src/schema';
 
 	name;

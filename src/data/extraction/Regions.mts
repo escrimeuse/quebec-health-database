@@ -66,10 +66,10 @@ class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<Transfo
 
 	async writeRegionShapeFiles(data: Array<RegionRecordData>) {
 		try {
-			fs.mkdirSync('./src/data/donneesQuebec/shapeFiles/', { recursive: true });
+			fs.mkdirSync('./src/data/extracted/shapeFiles/', { recursive: true });
 
 			data[0].features.forEach((feature) => {
-				fs.writeFileSync(`./src/data/donneesQuebec/shapeFiles/${feature.properties.RSS_code}.json`, JSON.stringify(feature));
+				fs.writeFileSync(`./src/data/extracted/shapeFiles/${feature.properties.RSS_code}.json`, JSON.stringify(feature));
 			});
 		} catch (error) {
 			console.error('There was an error writing the region shape file: ', error);

@@ -58,7 +58,7 @@ type TransformedCumulativeEmergencyData = {
 	delayUntilSeenStretchers: number | null;
 };
 
-class CumulativeEmergencyData extends DonneesQuebecDataExtractor<CumulativelEmergencyRecord, Array<TransformedCumulativeEmergencyData>> {
+class CumulativeEmergency extends DonneesQuebecDataExtractor<CumulativelEmergencyRecord, Array<TransformedCumulativeEmergencyData>> {
 	transformData(data: CumulativelEmergencyRecord[]): TransformedCumulativeEmergencyData[] {
 		const transformNumber = (numberAsString: string | null): number | null => {
 			return numberAsString ? Number(numberAsString) : null;
@@ -111,5 +111,6 @@ ${data
 `;
 	}
 }
-const emergencyData = new CumulativeEmergencyData('emergency', RESOURCE_ID);
+
+const emergencyData = new CumulativeEmergency('emergency', RESOURCE_ID);
 await emergencyData.run();
