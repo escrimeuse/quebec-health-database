@@ -1,5 +1,4 @@
-import { DonneesQuebecDataExtractor, type DonneesQuebecResponse } from './DonneesQuebecDataExtractor.ts';
-import fs from 'fs';
+import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.ts';
 
 const DELAY_MAP = {
 	'0 à 6 mois': '0_6',

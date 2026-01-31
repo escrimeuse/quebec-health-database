@@ -1,6 +1,4 @@
 import { DonneesQuebecDataExtractor } from './DonneesQuebecDataExtractor.ts';
-import type { DonneesQuebecResponse } from './DonneesQuebecDataExtractor.ts';
-import axios from 'axios';
 import fs from 'fs';
 
 const RESOURCE_IDS = [

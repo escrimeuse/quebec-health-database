@@ -41,5 +41,5 @@
 		"types": ["./worker-configuration.d.ts"]
 	},
 	"exclude": ["test"],
-	"include": ["worker-configuration.d.ts", "src/**/*.mts", "src/**/*.ts"]
+	"include": ["./worker-configuration.d.ts", "src/**/*.mts", "src/**/*.ts"]
 }

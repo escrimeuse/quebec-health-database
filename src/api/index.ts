@@ -12,11 +12,13 @@ const { preflight, corsify } = cors({
 	allowMethods: ALLOWED_METHODS.join(','),
 });
 
+type Env = Cloudflare.Env & { IS_LOCAL: boolean };
+
 const router = Router({
 	before: [
 		preflight,
-		(request, env) => {
-			if (!env.IS_LOCAL && !ALLOWED_ORIGINS.includes(request.headers.origin)) {
+		(request: Request, env: Env, ctx: ExecutionContext) => {
+			if (!env.IS_LOCAL && !ALLOWED_ORIGINS.includes(request.headers.get('origin') || '')) {
 				return new Response(undefined, { status: 403 });
 			}
 
@@ -37,7 +39,7 @@ openapi.get('/api/specialties', SpecialtiesEndpoint);
 router.all('*', () => new Response('Not Found.', { status: 404 }));
 
 export default {
-	fetch: (req, env, ctx) => {
+	fetch: (req: Request, env: Env, ctx: ExecutionContext) => {
 		return router.fetch(req, env, ctx);
 	},
 };
