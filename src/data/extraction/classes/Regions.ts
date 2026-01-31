@@ -49,6 +49,9 @@ export class Regions extends DonneesQuebecDataExtractor<RegionRecordData, Array<
 
 		const data = fs.readFileSync('./temp/shapeFile.zip');
 		fs.rmSync('./temp', { recursive: true });
+
+		// TODO: Should remove the conversion to GeoJSON to the transformData function, since that's
+		// technically a data transformation
 		const geoJson = await shp(data);
 
 		return [geoJson];
